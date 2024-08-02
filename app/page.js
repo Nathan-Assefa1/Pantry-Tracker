@@ -133,6 +133,7 @@ export default function Home(){
           key={name}
           width='100%'
           minHeight='150px'
+          display='flex'
           justifyContent='space-between'
           alignitems='center'
           bgcolor='#f0f0f0'
