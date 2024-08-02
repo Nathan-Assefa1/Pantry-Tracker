@@ -5,6 +5,21 @@ import { firestore } from '@/firebase'
 import { Box, Modal, Typography, Stack, TextField, Button } from '@mui/material'
 import { collection, doc, getDoc, getDocs, setDoc, query } from 'firebase/firestore'
 
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'white',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 3,
+}
+
 export default function Home(){
   const [items, setItems] = useState([]) //For the current list in inventory. Default value of empty array
   const [open, setOpen] = useState(false) //For modal
@@ -108,47 +123,52 @@ export default function Home(){
       <Button variant="contained" onClick={handleOpen}>
         Add New Item
       </Button>
-      <Box border={'1px solid #333'}>
+     
+      <Box border='1px solid #333'>
         <Box
-          width="800px"
-          height="100px"
-          bgcolor={'#ADD8E6'}
-          display={'flex'}
-          justifyContent={'center'}
-          alignItems={'center'}
+        width='800px'
+        height='100px'
+        bgcolor='#ADD8E6'
+        display = 'flex'
+        alignItems='center'
+        justifyContent='center'
         >
-          <Typography variant={'h2'} color={'#333'} textAlign={'center'}>
+          <Typography variant='h2' color='#333' textAlign="center">
             Inventory Items
           </Typography>
         </Box>
-        <Stack width="800px" height="300px" spacing={2} overflow={'auto'}>
-          {items.map(({name, quantity}) => (
-            <Box
-              key={name}
-              width="100%"
-              minHeight="150px"
-              display={'flex'}
-              justifyContent={'space-between'}
-              alignItems={'center'}
-              bgcolor={'#f0f0f0'}
-              paddingX={5}
-            >
-              <Typography variant={'h3'} color={'#333'} textAlign={'center'}>
-                {name.charAt(0).toUpperCase() + name.slice(1)}
-              </Typography>
-              <Typography variant={'h3'} color={'#333'} textAlign={'center'}>
-                Quantity: {quantity}
-              </Typography>
-              <Button variant="contained" onClick={() => removeItem(name)}>
-                Remove
-              </Button>
-            </Box>
-          ))}
-        </Stack>
       </Box>
-    </Box>
-  )
+      <Stack width='800px' height='300px' spacing={2} overflow='auto'>
+       {
+          
+          items.map(({name, count}) => (
+          <Box
+          key={name}
+          width='100%'
+          minHeight='150px'
+          display='flex'
+          justifyContent='space-between'
+          alignItems='center'
+          bgcolor='#f0f0f0'
+          paddingX={5}
+          >
+            <Typography variant='h3' color='#333' >
+              {name.charAt(0).toUpperCase() + name.slice(1)}
+            </Typography>
+            <Typography variant='h3' color='#333'>
+              {count}
+            </Typography>
+            <Stack direction='row' spacing={2}>
+              <Button variant='contained' onClick={() => addItems(name)}>Add</Button>
+              <Button variant='contained' onClick={() => removeItems(name)}>Remove</Button>
+            </Stack>
+          </Box>))
 
           
-      
+          
+        }
+
+      </Stack>
+    </Box>
+  )
 }
