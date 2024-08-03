@@ -1,9 +1,9 @@
 "use client"
 import Image from 'next/image'
 import {useState, useEffect} from 'react'
-import { firestore } from '@/firebase'
+import { firestore } from './firebase'
 import { Box, Modal, Typography, Stack, TextField, Button } from '@mui/material'
-import { collection, doc, getDoc, getDocs, setDoc, query } from 'firebase/firestore'
+import { collection, doc, getDoc, getDocs, setDoc, query, deleteDoc } from 'firebase/firestore'
 
 const style = {
   position: 'absolute',
@@ -24,6 +24,7 @@ export default function Home(){
   const [items, setItems] = useState([]) //For the current list in inventory. Default value of empty array
   const [open, setOpen] = useState(false) //For modal
   const [itemName, setItemName] = useState("") //For the typed out item (for add and removal)
+  const [searchName,setSearch] = useState("")
 
   const updateInventory = async () => { //async function means it won't block our code (website freeze) while fetching from database
     //This helper function is called by others to fetch inventory data
@@ -38,6 +39,22 @@ export default function Home(){
     })
     setItems(inventoryList)  //Update the inventory state variable
   } 
+  
+  const filterList = async(item) => {
+    const snapshot = query(collection(firestore,'Pantry'))
+    const doc = await getDocs(snapshot)
+    const inventoryList = []
+    doc.forEach((doc) => {
+      if(doc.id.toUpperCase().includes(searchName.toUpperCase()) === true){
+        inventoryList.push({
+          name: doc.id,
+          ...doc.data(),
+        })
+      }
+
+    })
+    setItems(inventoryList)
+  }
 
   const addItems = async(item) => { //Parameter 'item' is needed
     //A helper function in order add items to the list
@@ -110,7 +127,7 @@ export default function Home(){
             <Button
               variant="outlined"
               onClick={() => {
-                addItem(itemName)
+                addItems(itemName)
                 setItemName('')
                 handleClose()
               }}
@@ -120,7 +137,9 @@ export default function Home(){
           </Stack>
         </Box>
       </Modal>
-      <Button variant="contained" onClick={handleOpen}>
+      <Button variant="contained" onClick={() => {
+                handleOpen()
+              }}>
         Add New Item
       </Button>
      
@@ -138,13 +157,24 @@ export default function Home(){
           </Typography>
         </Box>
       </Box>
-      <Stack width='800px' height='300px' spacing={2} overflow='auto'>
+      <Stack width='800px' height='300px' spacing={2} overflow='auto' >
+        <Stack direction={'row'} sx={{ p:.75 }} >
+          <TextField id="outlined-basic" label="Search Items" variant="outlined" 
+          value={searchName} onChange={(e) => setSearch(e.target.value)}/>
+            <Button variant='contained' onClick={()=>{filterList(); setSearch('')}}>
+              Search
+              </Button>
+              <Button variant='contained' onClick={()=>{updateInventory()}} sx={{ marginLeft: "auto" }}>
+                Restart
+              </Button>
+        </Stack>
+        
        {
-          
+        
           items.map(({name, count}) => (
           <Box
           key={name}
-          width='100%'
+          width='90%'
           minHeight='150px'
           display='flex'
           justifyContent='space-between'
@@ -162,11 +192,8 @@ export default function Home(){
               <Button variant='contained' onClick={() => addItems(name)}>Add</Button>
               <Button variant='contained' onClick={() => removeItems(name)}>Remove</Button>
             </Stack>
-          </Box>))
-
-          
-          
-        }
+          </Box>
+          ))}
 
       </Stack>
     </Box>
