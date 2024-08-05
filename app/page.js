@@ -1,7 +1,7 @@
 "use client"
 import Image from 'next/image'
 import React, {useState, useEffect, useRef} from 'react'
-import { firestore } from './firebase'
+import { firestore } from '@/firebase'
 import { Box, Modal, Typography, Stack, TextField, Button } from '@mui/material'
 import { collection, doc, getDoc, getDocs, setDoc, query, deleteDoc } from 'firebase/firestore'
 import {Camera} from "react-camera-pro";
