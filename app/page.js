@@ -4,7 +4,6 @@ import React, {useState, useEffect, useRef} from 'react'
 import { firestore } from '@/firebase'
 import { Box, Modal, Typography, Stack, TextField, Button } from '@mui/material'
 import { collection, doc, getDoc, getDocs, setDoc, query, deleteDoc } from 'firebase/firestore'
-import {Camera} from "react-camera-pro";
 
 const style = {
   position: 'absolute',
@@ -26,8 +25,6 @@ export default function Home(){
   const [open, setOpen] = useState(false) //For modal
   const [itemName, setItemName] = useState("") //For the typed out item (for add and removal)
   const [searchName,setSearch] = useState("")
-  const cameraRef = useRef(null);
-  const [isCameraReady, setIsCameraReady] = useState(false);
 
   const updateInventory = async () => { //async function means it won't block our code (website freeze) while fetching from database
     //This helper function is called by others to fetch inventory data
@@ -94,14 +91,7 @@ export default function Home(){
     updateInventory()
   }, [])
 
-  const Component = () => {
-    <Box>
-      <Camera ref={camera} />
-      const photo = camera.current.takePhoto()
-      <img src={image} alt='Taken photo'/>
-    </Box>
-    
-  }
+ 
 
   //Model functions
   const handleOpen = () => setOpen(true)
